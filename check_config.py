@@ -1,7 +1,18 @@
 import csv
 import sys
+def load_legal_ids():
+    ids = set()
+    with open("物品表.csv", mode="r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ids.add(row["物品ID"])
+        return ids
+    
+check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
+
 def csv_print(path):
     error_list = []
+    legal_ids = load_legal_ids()
     try:
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
@@ -16,6 +27,10 @@ def csv_print(path):
                             if val<0:
                                 error_list.append(f"行 {index} {col_name}为负数")
                                 continue
+                            if col_name in check_cols:
+                                if str(val) not in legal_ids:
+                                    error_list.append(f"行 {index} {col_name}引用了不存在的物品ID:{val}")
+                                    continue
                         except ValueError:
                             error_list.append(f"行 {index} {col_name}不是数字")
                             continue
