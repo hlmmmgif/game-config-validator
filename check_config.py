@@ -1,19 +1,23 @@
 import csv
 import sys
+import logging
+import os
+
 def load_legal_ids():
     ids = set()
-    with open("物品表.csv", mode="r", encoding="utf-8-sig", newline="") as f:
+    current_dir = os.path.dirname(os.path.abspath(__file__))#os.path.abspath()——》绝对路径，os.path.dirname()——》返回该路径所在的文件夹
+    complete_dir = os.path.join(current_dir,"物品表.csv")
+    with open(complete_dir, mode="r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             ids.add(row["物品ID"])
         return ids
-    
-check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
 
 def csv_print(path):
     error_list = []
-    legal_ids = load_legal_ids()
+    check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
     try:
+        legal_ids = load_legal_ids()
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
             for index, row in enumerate(reader, start=2):
@@ -34,9 +38,9 @@ def csv_print(path):
                         except ValueError:
                             error_list.append(f"行 {index} {col_name}不是数字")
                             continue
-                    print(f"行 {index} {col_name} = {repr(val)} {type(val)}")
-    except FileNotFoundError:
-        print(f"{path}文件不存在")
+                    logging.debug(f"行 {index} {col_name} = {repr(val)} {type(val)}")
+    except FileNotFoundError as e:
+        print(f"{os.path.basename(e.filename)}文件不存在")
         sys.exit(2)
     return error_list
 
