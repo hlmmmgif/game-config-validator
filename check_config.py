@@ -17,6 +17,10 @@ def csv_print(path):
     error_list = []
     check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
     try:
+        if os.path.getsize(path) == 0:
+            print("文件为空")
+            sys.exit(2)
+        
         legal_ids = load_legal_ids()
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
@@ -39,6 +43,9 @@ def csv_print(path):
                             error_list.append(f"行 {index} {col_name}不是数字")
                             continue
                     logging.debug(f"行 {index} {col_name} = {repr(val)} {type(val)}")
+            if reader.line_num == 1:
+                print("文件只有表头")
+                sys.exit(1)
     except FileNotFoundError as e:
         print(f"{os.path.basename(e.filename)}文件不存在")
         sys.exit(2)
