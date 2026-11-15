@@ -1,10 +1,12 @@
 import csv
 import sys
 import os
+
 def file_dir(path):
     current_dir = os.path.dirname(os.path.abspath(__file__))#os.path.abspath()——》绝对路径，os.path.dirname()——》返回该路径所在的文件夹
     complete_dir = os.path.join(current_dir,path)
     return complete_dir
+
 def item_ids():
     ids = set()
     complete_dir = file_dir("物品表.csv")
@@ -63,14 +65,15 @@ def check_economy(path = "sheet2.csv"):
             except (ValueError,KeyError):
                 print("数据异常")
                 results.append("数据异常")
-        if "可套利" in results or "数据异常" in results:
-            print("exit = 1")
-            sys.exit(1)
-        else:
-            print("exit = 0")
-            sys.exit(0)
-            
-check_economy()   
+    return results
+if __name__ =="__main__":                        
+    results = check_economy()
+    if "可套利" in results or "数据异常" in results:
+        print("exit = 1")
+        sys.exit(1)
+    else:
+        print("exit = 0")    
+        sys.exit(0)
 
 
 
