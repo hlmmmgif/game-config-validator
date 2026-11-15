@@ -33,12 +33,21 @@ def check_economy(path = "sheet2.csv"):
         print(f"{'物品ID':<8}{'投入成本':<8}{'期望产出':<8}{'收益比':<8}{'判定'}")
         for row in reader:
             try:
-                input_cost = int(values[row["物品ID"]]) + int(row["分解手续费"])
-                product1_value = int(values[row["分解产物1_ID"]]) * int(row["产物1数量"])
+                handling_fee = int(row["分解手续费"])
+                product1_num = int(row["产物1数量"])
+                if handling_fee < 0:
+                    raise ValueError
+                input_cost = int(values[row["物品ID"]]) + handling_fee
+                if product1_num < 0:
+                    raise ValueError
+                product1_value = int(values[row["分解产物1_ID"]]) * product1_num
                 if row["分解产物2_ID"] == "" or row["分解产物2_ID"] == "0":
                     output_value = product1_value
                 else:
-                    product2_value = int(values[row["分解产物2_ID"]]) * int(row["产物2数量"])
+                    product2_num = int(row["产物2数量"])
+                    if product2_num < 0:
+                        raise ValueError
+                    product2_value = int(values[row["分解产物2_ID"]]) * product2_num
                     output_value = product1_value + product2_value
                 try:
                     rate = output_value / input_cost
@@ -53,7 +62,8 @@ def check_economy(path = "sheet2.csv"):
                 print(f"{row['物品ID']:<8}{input_cost:<8}{output_value:<8}{rate:<8.2f}{result}")
             except (ValueError,KeyError):
                 print("数据异常")
-        if "可套利" in results:
+                results.append("数据异常")
+        if "可套利" in results or "数据异常" in results:
             print("exit = 1")
             sys.exit(1)
         else:
