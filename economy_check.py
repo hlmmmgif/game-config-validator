@@ -37,7 +37,8 @@ def check_economy():
                 output_value = product1_value
             elif row["分解产物2_ID"] not in values:
                 output_value = product1_value
-                print(f"没有id为{row['分解产物2_ID']}的产物")
+                print(f"{row['物品ID']:<8}{input_cost:<8}{output_value:<8}无效 数据不全")
+                continue
             else:
                 product2_value = int(values[row["分解产物2_ID"]]) * int(row["产物2数量"])
                 output_value = product1_value + product2_value
@@ -48,9 +49,10 @@ def check_economy():
                 continue
             if rate > 1:
                 result = "可套利"
+                print(f"{row['物品ID']:<8}{input_cost:<8}{output_value:<8}{rate:<8.2f}{result}")
             else:
                 result = "正常"
-            print(f"{row['物品ID']:<8}{input_cost:<8}{output_value:<8}{rate:<8.2f}{result}")
+                print(f"{row['物品ID']:<8}{input_cost:<8}{output_value:<8}{rate:<8.2f}{result}")
 check_economy()            
             
 
