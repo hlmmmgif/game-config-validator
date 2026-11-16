@@ -20,7 +20,6 @@ def csv_print(path):
         if os.path.getsize(path) == 0:
             print("文件为空")
             sys.exit(2)
-        
         legal_ids = load_legal_ids()
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
