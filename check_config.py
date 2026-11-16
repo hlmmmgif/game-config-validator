@@ -24,25 +24,31 @@ def csv_print(path):
         legal_ids = load_legal_ids()
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
-            for index, row in enumerate(reader, start=2):
-                for col_name in reader.fieldnames:
-                    if row[col_name] == "":
-                        error_list.append(f"行 {index} {col_name} 为空")
-                        continue
-                    else:
-                        try:
-                            val = int(row[col_name])
-                            if val<0:
-                                error_list.append(f"行 {index} {col_name}为负数")
-                                continue
-                            if col_name in check_cols:
-                                if str(val) not in legal_ids:
-                                    error_list.append(f"行 {index} {col_name}引用了不存在的物品ID:{val}")
-                                    continue
-                        except ValueError:
-                            error_list.append(f"行 {index} {col_name}不是数字")
+            for index, row in enumerate(reader, start=2):#行循环
+                if row["分解产物2_ID"] in ["","0"] and row["产物2数量"] not in ["","0"]:
+                    error_list.append(f"行 {index} 分解产物2_ID为空，但是产物2数量不为空")
+                for col_name in reader.fieldnames:#列循环
+                    if row[col_name] in ["","0"]:
+                        if col_name == "分解产物2_ID":
                             continue
-                    logging.debug(f"行 {index} {col_name} = {repr(val)} {type(val)}")
+                        if col_name == "产物2数量" and row["分解产物2_ID"] in ["","0"]:
+                            continue
+                        else:
+                            error_list.append(f"行 {index} {col_name}为空")
+                            continue
+                    try:
+                        val = int(row[col_name])
+                        if val<0:
+                            error_list.append(f"行 {index} {col_name}为负数")
+                            continue
+                        if col_name in check_cols:
+                            if str(val) not in legal_ids:
+                                error_list.append(f"行 {index} {col_name}引用了不存在的物品ID:{val}")
+                                continue
+                    except ValueError:
+                        error_list.append(f"行 {index} {col_name}不是数字")
+                        continue
+                logging.debug(f"行 {index} {col_name} = {repr(val)} {type(val)}")
             if reader.line_num == 1:
                 print("文件只有表头")
                 sys.exit(1)
