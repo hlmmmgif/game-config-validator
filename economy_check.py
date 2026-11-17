@@ -9,7 +9,7 @@ def file_dir(path):
 
 def values_check():
     values = {}
-    complete_dir = file_dir("物品价值.csv")
+    complete_dir = file_dir("data/物品价值.csv")
     with open(complete_dir, mode="r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -17,7 +17,7 @@ def values_check():
         return values
 
 
-def check_economy(path = "sheet2.csv"):
+def check_economy(path = "data/sheet2.csv"):
     results = []
     values = values_check()
     complete_dir = file_dir(path)

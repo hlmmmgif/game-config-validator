@@ -6,7 +6,7 @@ import os
 def load_legal_ids():
     ids = set()
     current_dir = os.path.dirname(os.path.abspath(__file__))#os.path.abspath()——》绝对路径，os.path.dirname()——》返回该路径所在的文件夹
-    complete_dir = os.path.join(current_dir,"物品表.csv")
+    complete_dir = os.path.join(current_dir,"data","物品表.csv")
     with open(complete_dir, mode="r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:

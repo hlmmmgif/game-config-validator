@@ -51,17 +51,18 @@
 ---
 
 ## 3. 怎么用
+所有命令必须在项目虚拟环境下运行，否则依赖库不可用
+环境准备：需要把.env.example复制成.env，并填入api key
 
 ```bash
 # 只查格式
-python check_config.py sheet2.csv
+python check_config.py data/sheet2.csv
 
 # 只查数值
-python economy_check.py sheet2.csv
+python economy_check.py data/sheet2.csv
 
 # 两个一起，一个退出码
-python check_all.py sheet2.csv
-```
+python check_all.py data/ssheet2.csv
 
 真实输出：
 
@@ -88,6 +89,9 @@ exit = 1
 | 1 | 跑完了，但检查不通过 |
 | 2 | 没能开始工作（文件找不到 / 空文件 / 用法错） |
 
+#连通性自检
+python test_api.py
+
 ---
 
 ## 4. 它拦住了哪些真实的错
@@ -109,9 +113,9 @@ exit = 1
 
 | 文件 | 装什么 | 期望 |
 |---|---|---|
-| `valid_case.csv` | 所有合法形态 | 0 条错误，退出码 0 |
-| `bad_case.csv` | 一行一个错 | 6 条错误，退出码 1 |
-| `sheet2.csv` | 真实业务样本 | 格式 0 条；数值 5.94 / 4.95 / 4.95 |
+| `test_data/valid_case.csv` | 所有合法形态 | 0 条错误，退出码 0 |
+| `test_data/bad_case.csv` | 一行一个错 | 6 条错误，退出码 1 |
+| `data/sheet2.csv` | 真实业务样本 | 格式 0 条；数值 5.94 / 4.95 / 4.95 |
 
 保证每条规则都有独立暴露的机会，将每种错误的测试隔离出来，便于在代码修改后比对前后的报错
 报6条=全对，报5条=漏了一个，报7条=有重复
