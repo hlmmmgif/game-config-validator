@@ -62,7 +62,7 @@ python check_config.py data/sheet2.csv
 python economy_check.py data/sheet2.csv
 
 # 两个一起，一个退出码
-python check_all.py data/ssheet2.csv
+python check_all.py data/sheet2.csv
 
 真实输出：
 
