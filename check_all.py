@@ -28,7 +28,6 @@ res2 = subprocess.run(
 )
 print("=====数值检查=====")
 print(res2.stdout)
-
 returncode = max(res1.returncode,res2.returncode)
 if returncode == 0:
     print("总结果：通过")
