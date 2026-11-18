@@ -42,5 +42,5 @@ if use_llm:
         from report import make_report
         print(make_report(check_text))
     except Exception as e:
-        print(f"报告生成失败{e}")
+        print(f"报告生成失败{e}:")
 sys.exit(returncode)
