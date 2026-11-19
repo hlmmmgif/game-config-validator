@@ -3,8 +3,6 @@ import sys
 import logging
 import os
 
-json_out = "--json" in sys.argv
-args = [a for a in sys.argv[1:] if a != "--json"]
 
 def load_legal_ids():
     ids = set()
@@ -67,17 +65,20 @@ def csv_print(path):
         sys.exit(2)
     return error_list
 
-if len(sys.argv) < 2:
-    print("用法：python check_config.py <文件名>")
-    sys.exit(2)
-else:
-    error_list = csv_print(args[0])
-    if json_out:
-        import json
-        print(json.dumps(error_list,ensure_ascii=False))
+if __name__ == "__main__":
+    json_out = "--json" in sys.argv
+    args = [a for a in sys.argv[1:] if a != "--json"]
+    if len(args) < 2:
+        print("用法：python check_config.py <文件名>")
+        sys.exit(2)
     else:
-        lines = [f"行 {e['行']} {e['列']}{e['问题']}" for e in error_list]
-        print(lines)
-        print(f"发现{len(error_list)}个错误")
-if len(error_list) > 0:
-    sys.exit(1)
+        error_list = csv_print(args[0])
+        if json_out:
+            import json
+            print(json.dumps(error_list,ensure_ascii=False))
+        else:
+            lines = [f"行 {e['行']} {e['列']}{e['问题']}" for e in error_list]
+            print(lines)
+            print(f"发现{len(error_list)}个错误")
+        if len(error_list) > 0:
+            sys.exit(1)
