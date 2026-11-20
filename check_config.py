@@ -3,6 +3,11 @@ import sys
 import logging
 import os
 
+class CheckAbort(Exception):
+    def __init__(self,message,code):
+        super().__init__(message)
+        self.code = code
+
 
 def load_legal_ids():
     ids = set()
@@ -27,8 +32,7 @@ def csv_print(path):
     check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
     try:
         if os.path.getsize(path) == 0:
-            print("文件为空")
-            sys.exit(2)
+            raise CheckAbort("文件为空",2)
         legal_ids = load_legal_ids()
         with open(path, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
@@ -58,21 +62,23 @@ def csv_print(path):
                         continue
                 logging.debug(f"行 {index} {col_name} = {repr(val)} {type(val)}")
             if reader.line_num == 1:
-                print("文件只有表头")
-                sys.exit(1)
+                raise CheckAbort("文件只有表头",1)
     except FileNotFoundError as e:
-        print(f"{os.path.basename(e.filename)}文件不存在")
-        sys.exit(2)
+        raise CheckAbort(f"{os.path.basename(e.filename)}文件不存在",2) from e 
     return error_list
 
 if __name__ == "__main__":
     json_out = "--json" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--json"]
-    if len(args) < 2:
+    if len(args) < 1:
         print("用法：python check_config.py <文件名>")
         sys.exit(2)
     else:
-        error_list = csv_print(args[0])
+        try:
+            error_list = csv_print(args[0])
+        except CheckAbort as e:
+            print(e)
+            sys.exit(e.code)
         if json_out:
             import json
             print(json.dumps(error_list,ensure_ascii=False))
