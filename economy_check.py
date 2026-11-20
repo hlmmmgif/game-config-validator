@@ -1,6 +1,7 @@
 import csv
 import sys
 import os
+from check_config import CheckAbort
 
 def file_dir(path):
     current_dir = os.path.dirname(os.path.abspath(__file__))#os.path.abspath()——》绝对路径，os.path.dirname()——》返回该路径所在的文件夹
@@ -19,9 +20,9 @@ def values_check():
 
 def check_economy(path = "data/sheet2.csv"):
     results = []
-    values = values_check()
-    complete_dir = file_dir(path)
     try:
+        values = values_check()
+        complete_dir = file_dir(path)
         with open(complete_dir, mode="r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
             print(f"{'物品ID':<8}{'投入成本':<8}{'期望产出':<8}{'收益比':<8}{'判定'}")
@@ -58,14 +59,17 @@ def check_economy(path = "data/sheet2.csv"):
                     print("数据异常")
                     results.append("数据异常")
     except FileNotFoundError as e:
-            print(f"{os.path.basename(e.filename)}文件不存在")
-            sys.exit(2)
+        raise CheckAbort(f"{os.path.basename(e.filename)}文件不存在",2) from e
     return results
 if __name__ =="__main__": 
     if len(sys.argv) < 2:
         print("用法：python economy_check.py <文件名>")
-        sys.exit(2)                       
-    results = check_economy(sys.argv[1])
+        sys.exit(2)    
+    try:                       
+        results = check_economy(sys.argv[1])
+    except CheckAbort as e:
+        print(e)
+        sys.exit(e.code)
     if "可套利" in results or "数据异常" in results:
         print("exit = 1")
         sys.exit(1)
