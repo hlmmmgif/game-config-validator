@@ -27,6 +27,9 @@ def add_error(error_list, row, col, level, reason):
         "问题": reason,
     })
 
+def format_errors(error_list):
+    return [f"行 {e['行']} {e['列']}{e['问题']}" for e in error_list]
+
 def csv_print(path):
     error_list = []
     check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
@@ -83,8 +86,7 @@ if __name__ == "__main__":
             import json
             print(json.dumps(error_list,ensure_ascii=False))
         else:
-            lines = [f"行 {e['行']} {e['列']}{e['问题']}" for e in error_list]
-            print(lines)
+            print(format_errors(error_list))
             print(f"发现{len(error_list)}个错误")
         if len(error_list) > 0:
             sys.exit(1)

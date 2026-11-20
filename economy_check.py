@@ -61,21 +61,18 @@ def check_economy(path = "data/sheet2.csv"):
     except FileNotFoundError as e:
         raise CheckAbort(f"{os.path.basename(e.filename)}文件不存在",2) from e
     return results
-if __name__ =="__main__": 
-    if len(sys.argv) < 2:
-        print("用法：python economy_check.py <文件名>")
-        sys.exit(2)    
-    try:                       
-        results = check_economy(sys.argv[1])
-    except CheckAbort as e:
-        print(e)
-        sys.exit(e.code)
+
+def verdict(results):
     if "可套利" in results or "数据异常" in results:
-        print("exit = 1")
-        sys.exit(1)
-    else:
-        print("exit = 0")    
-        sys.exit(0)
+        return 1
+    return 0
+
+if __name__ =="__main__": 
+    results = check_economy()
+    code = verdict(results)
+    print(f"exit = {code}")
+    sys.exit(code)
+
 
 
 
