@@ -30,6 +30,9 @@ def add_error(error_list, row, col, level, reason):
 def format_errors(error_list):
     return [f"行 {e['行']} {e['列']}{e['问题']}" for e in error_list]
 
+def format_for_ai(error_list):
+    return [f"[{e['等级']}] 行 {e['行']} {e['列']}{e['问题']}"for e in error_list]
+
 def csv_print(path):
     error_list = []
     check_cols = ["物品ID","分解产物1_ID","分解产物2_ID"]
@@ -47,6 +50,9 @@ def csv_print(path):
                         if col_name == "分解产物2_ID":
                             continue
                         if col_name == "产物2数量" and row["分解产物2_ID"] in ["","0"]:
+                            continue
+                        if col_name in ["物品ID","分解产物1_ID","产物1数量","分解手续费","分解耗时(秒)"]:
+                            add_error(error_list,index,col_name,"必须改","为空")
                             continue
                         else:
                             add_error(error_list,index,col_name,"建议改","为空")

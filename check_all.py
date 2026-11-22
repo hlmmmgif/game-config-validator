@@ -1,6 +1,6 @@
 import sys
 import io,contextlib
-from check_config import csv_print,CheckAbort,format_errors
+from check_config import csv_print,CheckAbort,format_errors,format_for_ai
 from economy_check import check_economy, verdict
 
 def main():
@@ -41,7 +41,18 @@ def main():
     if use_llm:
         print("=====报告=====")
         try:
-            check_text = "\n".join(format_errors(error_list)) + "\n" + buf.getvalue()
+            value_check = len(results)
+            value_error = results.count('数据异常')
+            profit_count = results.count('可套利')    
+            if '可套利' in results or '数据异常' in results:
+                tag = "【必须改】"
+            else:
+                tag = "【建议改】"
+            check_text = (
+                "\n".join(format_for_ai(error_list)) 
+                + f"\n{tag} 数值检查共{value_check}行，数据异常{value_error}行，可套利{profit_count}行\n" 
+                + buf.getvalue()
+            )
             from report import make_report
             print(make_report(check_text))
         except Exception as e:
