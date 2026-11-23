@@ -12,6 +12,7 @@ def input_check(path="data/sheet2.csv"):
             header = reader.fieldnames
     except FileNotFoundError as e:
             raise CheckAbort(f"{os.path.basename(e.filename)}文件不存在",2) from e 
+    return header
 
 
 def load_name_to_id(path="data/物品表.csv"):
