@@ -46,7 +46,7 @@ def csv_print(path):
                 if row["分解产物2_ID"] in ["","0"] and row["产物2数量"] not in ["","0"]:
                     add_error(error_list,index,"分解产物2_ID","必须改","为空，但是产物2数量不为空")
                 for col_name in reader.fieldnames:#列循环
-                    if row[col_name] in ["","0"]:
+                    if row[col_name] == "":
                         if col_name == "分解产物2_ID":
                             continue
                         if col_name == "产物2数量" and row["分解产物2_ID"] in ["","0"]:
@@ -64,8 +64,11 @@ def csv_print(path):
                             continue
                         if col_name in check_cols:
                             if str(val) not in legal_ids:
-                                add_error(error_list,index,col_name,"必须改",f"引用了不存在的物品ID:{val}")
-                                continue
+                                if col_name == "分解产物2_ID" and val == 0:
+                                    continue
+                                else:
+                                    add_error(error_list,index,col_name,"必须改",f"引用了不存在的物品ID:{val}")
+                                    continue
                     except ValueError:
                         add_error(error_list,index,col_name,"必须改","不是数字")
                         continue
